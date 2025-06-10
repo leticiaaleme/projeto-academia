@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <body>
-<!-- Fragmento contendo os campos do formulário de aluno -->
 <div th:fragment="formFields">
     <div class="form-group">
         <label for="nome">Nome:</label>
@@ -28,76 +27,5 @@
     </div>
 </div>
 
-<!-- Fragmento contendo os scripts para as máscaras -->
-<script th:fragment="formAlunoScripts">
-    /*<![CDATA[*/
-    function maskCpf(event) {
-        let input = event.target;
-        let value = input.value.replace(/\D/g, ''); // Remove tudo que não é dígito
-        value = value.substring(0, 11); // Limita a 11 dígitos
-
-        let maskedValue = '';
-        if (value.length > 9) {
-            maskedValue = value.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
-        } else if (value.length > 6) {
-            maskedValue = value.replace(/(\d{3})(\d{3})(\d{1,3})/, '$1.$2.$3');
-        } else if (value.length > 3) {
-            maskedValue = value.replace(/(\d{3})(\d{1,3})/, '$1.$2');
-        } else {
-            maskedValue = value;
-        }
-        input.value = maskedValue;
-    }
-
-    function maskTelefone(event) {
-        let input = event.target;
-        let value = input.value.replace(/\D/g, ''); // Remove tudo que não é dígito
-        value = value.substring(0, 11); // Limita a 11 dígitos (DDD + 9 dígitos)
-
-        let maskedValue = '';
-        if (value.length > 10) { // Celular (XX) XXXXX-XXXX
-            maskedValue = value.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
-        } else if (value.length > 6) { // Fixo com 8 dígitos (XX) XXXX-XXXX ou Celular incompleto
-            maskedValue = value.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
-        } else if (value.length > 2) { // DDD + início do número
-            maskedValue = value.replace(/(\d{2})(\d*)/, '($1) $2');
-        } else if (value.length > 0) { // Início do DDD
-            maskedValue = value.replace(/(\d*)/, '($1');
-        } else {
-            maskedValue = ''; // Limpa se estiver vazio
-        }
-        input.value = maskedValue;
-    }
-
-    // Função para remover máscara ANTES de submeter o formulário
-    function unmaskFields(form) {
-        const cpfInput = form.querySelector('#cpf');
-        if (cpfInput) {
-            cpfInput.value = cpfInput.value.replace(/\D/g, '');
-        }
-        const telefoneInput = form.querySelector('#telefone');
-        if (telefoneInput) {
-            telefoneInput.value = telefoneInput.value.replace(/\D/g, '');
-        }
-        // Não precisa retornar true nem chamar form.submit() se o onsubmit do form
-        // apenas chamar esta função e depois deixar o submit padrão ocorrer.
-        // Se o onsubmit tiver event.preventDefault(), então precisaria de form.submit().
-    }
-
-    // Aplica máscara aos campos se já tiverem valor (ao carregar para edição)
-    document.addEventListener('DOMContentLoaded', function() {
-        const cpfInput = document.getElementById('cpf');
-        if (cpfInput && cpfInput.value) {
-            // Simula um evento de input para aplicar a máscara ao valor existente
-            maskCpf({ target: cpfInput });
-        }
-
-        const telefoneInput = document.getElementById('telefone');
-        if (telefoneInput && telefoneInput.value) {
-            maskTelefone({ target: telefoneInput });
-        }
-    });
-    /*]]>*/
-</script>
 </body>
 </html>

@@ -12,6 +12,7 @@ import br.com.gymtime.model.Treino;
 import br.com.gymtime.repository.AlunoRepository;
 import br.com.gymtime.repository.TreinoRepository;
 import br.com.gymtime.service.TreinoService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +23,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class TreinoServiceImpl implements TreinoService {
 
     private final TreinoRepository treinoRepository;
@@ -149,8 +151,17 @@ public class TreinoServiceImpl implements TreinoService {
     @Transactional
     @Override
     public void deleteTreino(Long id) {
+        log.info("Iniciando deleção do treino com ID: {}", id);
         Treino treino = treinoRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Treino não encontrado com ID: " + id));
-        treinoRepository.delete(treino); // Cascade e orphanRemoval cuidarão dos exercícios
+                .orElseThrow(() -> new ResourceNotFoundException("Treino não encontrado com id: " + id));
+
+        // Remover referências em exercícios se necessário
+        if (treino.getExercicios() != null) {
+            treino.getExercicios().clear();
+        }
+
+        treinoRepository.delete(treino);
+        treinoRepository.flush(); // Força a sincronização com o banco
+        log.info("Treino com ID: {} deletado com sucesso", id);
     }
 }

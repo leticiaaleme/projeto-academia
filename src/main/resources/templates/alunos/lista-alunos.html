@@ -21,6 +21,7 @@
         <th>Email</th>
         <th>Telefone</th>
         <th>CPF</th>
+        <th>Nº Treinos</th>
         <th>Ações</th>
     </tr>
     </thead>
@@ -31,6 +32,7 @@
         <td th:text="${aluno.email}"></td>
         <td th:text="${aluno.getFormattedTelefone()} ?: '-'"></td> <!-- Usa método formatado -->
         <td th:text="${aluno.getFormattedCpf()}"></td> <!-- Usa método formatado -->
+        <td th:text="${aluno.treinos().size()}"></td>
         <td class="actions">
             <a th:href="@{/web/alunos/editar/{id}(id=${aluno.id})}" class="edit-link">Editar</a>
             <a th:href="@{/web/alunos/deletar/{id}(id=${aluno.id})}" class="delete-link"

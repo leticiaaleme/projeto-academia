@@ -41,7 +41,6 @@
         <div th:if="${#fields.hasGlobalErrors()}" class="message error">
             <p th:each="err : ${#fields.globalErrors()}" th:text="${err}"></p>
         </div>
-
         <div class="form-group">
             <label for="treinoNomeCreate">Nome do Treino:</label>
             <input type="text" id="treinoNomeCreate" th:field="*{nome}" />
@@ -67,7 +66,7 @@
                 <div th:if="${#fields.hasErrors('exercicios[__${iterStat.index}__].seriesRepeticoes')}"
                      th:errors="*{exercicios[__${iterStat.index}__].seriesRepeticoes}" class="error-message"></div>
 
-                <button type="button" class="remove-exercise-btn" onclick="removerExercicio(this, 'exerciciosContainerCreate')">Remover</button>
+                <button type="button" class="remove-exercise-btn">Remover</button>
             </div>
         </div>
         <button type="button" id="addExercicioBtnCreate" class="add-exercise-btn">(+) Adicionar Exercício</button>
@@ -85,7 +84,6 @@
         <div th:if="${#fields.hasGlobalErrors()}" class="message error">
             <p th:each="err : ${#fields.globalErrors()}" th:text="${err}"></p>
         </div>
-
         <div class="form-group">
             <label for="treinoNomeUpdate">Nome do Treino:</label>
             <input type="text" id="treinoNomeUpdate" th:field="*{nome}" />
@@ -111,7 +109,7 @@
                 <div th:if="${#fields.hasErrors('exercicios[__${iterStat.index}__].seriesRepeticoes')}"
                      th:errors="*{exercicios[__${iterStat.index}__].seriesRepeticoes}" class="error-message"></div>
 
-                <button type="button" class="remove-exercise-btn" onclick="removerExercicio(this, 'exerciciosContainerUpdate')">Remover</button>
+                <button type="button" class="remove-exercise-btn">Remover</button>
             </div>
         </div>
         <button type="button" id="addExercicioBtnUpdate" class="add-exercise-btn">(+) Adicionar Exercício</button>
@@ -131,106 +129,7 @@
     </div>
 </div>
 
-<script th:inline="javascript">
-    /*<![CDATA[*/
-
-    function setupDynamicExercises(containerId, addButtonId) {
-        const container = document.getElementById(containerId);
-        const addButton = document.getElementById(addButtonId);
-
-        // Este índice será usado para os NOVOS itens.
-        // Ele começa baseado no número de itens já renderizados pelo Thymeleaf.
-        let nextExerciseIndex = container.querySelectorAll('.exercise-item').length;
-
-        if (addButton) {
-            addButton.addEventListener('click', function() {
-                const currentIndexForNewItem = nextExerciseIndex;
-
-                const newExercicioDiv = document.createElement('div');
-                newExercicioDiv.classList.add('exercise-item');
-                // O ID do div do item não é tão crucial, mas os names e IDs dos inputs são.
-
-                // IDs dos inputs devem ser únicos na página. Adicionar sufixo do container pode ajudar.
-                const idSuffix = containerId.includes('Create') ? '-create' : '-update';
-
-                newExercicioDiv.innerHTML =
-                    '<label for="exercicios[' + currentIndexForNewItem + '].nomeExercicio' + idSuffix + '">Exercício:</label>' +
-                    '<input type="text" id="exercicios[' + currentIndexForNewItem + '].nomeExercicio' + idSuffix + '" name="exercicios[' + currentIndexForNewItem + '].nomeExercicio" placeholder="Nome do Exercício"/>' +
-                    '<label for="exercicios[' + currentIndexForNewItem + '].seriesRepeticoes' + idSuffix + '">Séries/Rep:</label>' +
-                    '<input type="text" id="exercicios[' + currentIndexForNewItem + '].seriesRepeticoes' + idSuffix + '" name="exercicios[' + currentIndexForNewItem + '].seriesRepeticoes" placeholder="Ex: 3x10"/>' +
-                    '<button type="button" class="remove-exercise-btn" onclick="removerExercicio(this, \'' + containerId + '\')">Remover</button>';
-
-                container.appendChild(newExercicioDiv);
-                nextExerciseIndex++; // Incrementa o índice para o próximo NOVO item
-            });
-        }
-    }
-
-    function reindexExercicios(containerId) {
-        const container = document.getElementById(containerId);
-        if (!container) return;
-
-        const items = container.querySelectorAll('.exercise-item');
-        const idSuffix = containerId.includes('Create') ? '-create' : '-update';
-
-        items.forEach((item, index) => {
-            // Atualiza os 'name' e 'id'/'for' dos inputs e labels
-            const nomeExercicioInput = item.querySelector('input[name$=".nomeExercicio"]');
-            const seriesRepeticoesInput = item.querySelector('input[name$=".seriesRepeticoes"]');
-            // Encontrar labels baseando-se no padrão, já que o 'for' também será reindexado
-            const nomeExercicioLabel = item.querySelector('label[for*="nomeExercicio"]');
-            const seriesRepeticoesLabel = item.querySelector('label[for*="seriesRepeticoes"]');
-
-            if (nomeExercicioInput) {
-                nomeExercicioInput.name = 'exercicios[' + index + '].nomeExercicio';
-                nomeExercicioInput.id = 'exercicios[' + index + '].nomeExercicio' + idSuffix;
-            }
-            if (nomeExercicioLabel) {
-                nomeExercicioLabel.htmlFor = 'exercicios[' + index + '].nomeExercicio' + idSuffix;
-            }
-
-            if (seriesRepeticoesInput) {
-                seriesRepeticoesInput.name = 'exercicios[' + index + '].seriesRepeticoes';
-                seriesRepeticoesInput.id = 'exercicios[' + index + '].seriesRepeticoes' + idSuffix;
-            }
-            if (seriesRepeticoesLabel) {
-                seriesRepeticoesLabel.htmlFor = 'exercicios[' + index + '].seriesRepeticoes' + idSuffix;
-            }
-        });
-        // Atualiza o índice para o próximo item a ser adicionado para este container específico.
-        // A variável nextExerciseIndex dentro de setupDynamicExercises será o novo items.length
-        // quando um novo exercício for adicionado após uma remoção e reindexação.
-        // Para garantir que a função setupDynamicExercises use o índice correto após reindexação:
-        if (containerId === 'exerciciosContainerCreate') {
-            // Reatribuir o próximo índice com base no número atual de itens
-            // Este ajuste é um pouco mais complexo se nextExerciseIndex for local a setupDynamicExercises
-            // A maneira como setupDynamicExercises foi escrita, ela já recalcula 'nextExerciseIndex'
-            // ao ser chamada, o que é bom. A reindexação garante que os nomes enviados sejam sequenciais.
-            // O 'nextExerciseIndex' global para o evento de clique precisa refletir o novo count.
-            // Uma forma mais simples é que o 'addButton.onclick' recalcule o 'nextExerciseIndex' antes de adicionar.
-            // Por ora, a reindexação dos names é o mais crítico para a submissão.
-        } else if (containerId === 'exerciciosContainerUpdate') {
-            // Similar.
-        }
-    }
-
-    function removerExercicio(button, containerId) {
-        button.closest('.exercise-item').remove();
-        reindexExercicios(containerId);
-    }
-
-    document.addEventListener('DOMContentLoaded', function() {
-        // A variável 'treinoId' é injetada pelo Thymeleaf (se existir no model)
-        const isCreatingNewTreino = /*[[${treinoId == null}]]*/ false;
-
-        if (isCreatingNewTreino) {
-            setupDynamicExercises('exerciciosContainerCreate', 'addExercicioBtnCreate');
-        } else { // Modo de edição
-            setupDynamicExercises('exerciciosContainerUpdate', 'addExercicioBtnUpdate');
-        }
-    });
-    /*]]>*/
-</script>
+<script th:src="@{/js/form-treino.js}" defer></script>
 
 </body>
 </html>

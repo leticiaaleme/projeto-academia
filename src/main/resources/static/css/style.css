@@ -1,76 +1,110 @@
 /* Estilos Gerais */
 body {
-    font-family: Arial, sans-serif;
-    margin: 20px;
-    background-color: #f9f9f9;
-    color: #333;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f4f7f6; /* Fundo cinza bem claro e neutro */
+    color: #3d3d3d;
+    line-height: 1.6;
+}
+
+/* Container principal para centralizar conteúdo nas páginas */
+.page-container {
+    max-width: 1100px; /* Largura máxima para tabelas maiores */
+    margin: 20px auto;
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.form-container { /* Mantém o estilo para formulários, que já estava bom */
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 h1, h2, h3 {
-    color: #2c3e50;
+    color: #2c3e50; /* Azul escuro, sóbrio */
+    margin-top: 0;
+    margin-bottom: 20px;
 }
+h1 { font-size: 2.2em; border-bottom: 2px solid #eef1f5; padding-bottom: 10px; }
+h3 { color: #7f8c8d; font-weight: 500;}
 
+
+/* Tabelas */
 table {
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 20px;
-    box-shadow: 0 2px 3px rgba(0,0,0,0.1);
+    border: 1px solid #dee2e6;
+    border-radius: 6px; /* Borda arredondada na tabela */
+    overflow: hidden; /* Garante que o border-radius funcione */
 }
 
 th, td {
-    border: 1px solid #ddd;
-    padding: 10px 12px;
+    padding: 14px 18px;
     text-align: left;
+    vertical-align: middle;
+    border-bottom: 1px solid #dee2e6;
 }
 
 th {
-    background-color: #3498db;
-    color: white;
+    background-color: #f8f9fa; /* Cabeçalho bem claro */
+    color: #495057; /* Texto do cabeçalho mais escuro */
     text-transform: uppercase;
-    font-size: 0.9em;
-}
-
-tr:nth-child(even) {
-    background-color: #f2f2f2;
+    font-size: 0.85em;
+    font-weight: 600; /* Mais peso na fonte */
+    letter-spacing: 0.5px;
+    border-top: 1px solid #dee2e6;
 }
 
 tr:hover {
-    background-color: #e9e9e9;
+    background-color: #f1f3f5; /* Efeito hover sutil */
 }
 
 /* Links e Botões */
 a {
     color: #3498db;
     text-decoration: none;
-    transition: color 0.3s ease;
+    transition: color 0.2s ease-in-out;
 }
-
 a:hover {
     color: #2980b9;
-    text-decoration: underline;
 }
 
 .actions a, .actions button {
     margin-right: 8px;
-    padding: 6px 10px;
-    border-radius: 4px;
+    padding: 8px 12px;
+    border-radius: 5px;
     font-size: 0.9em;
     cursor: pointer;
     border: none;
+    text-align: center;
+    transition: all 0.2s ease-in-out;
+    display: inline-flex; /* Para alinhar ícone e texto */
+    align-items: center;
+    gap: 5px;
+}
+.actions a:active, .actions button:active {
+    transform: translateY(1px);
 }
 
-.actions a {
-    text-decoration: none;
+/* EFEITO HOVER MELHORADO */
+.actions a:hover, .actions button:hover,
+.add-button:hover, button[type="submit"]:hover {
+    filter: brightness(110%); /* Efeito de brilho sutil ao passar o mouse */
+    transform: translateY(-2px); /* Efeito de levantar */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
 }
-
-.actions a:hover, .actions button:hover {
-    opacity: 0.8;
-}
-
 
 .add-button, button[type="submit"] {
     display: inline-block;
-    padding: 10px 18px;
+    padding: 10px 20px;
     color: white;
     text-decoration: none;
     border-radius: 5px;
@@ -78,105 +112,92 @@ a:hover {
     border: none;
     cursor: pointer;
     font-size: 1em;
-    transition: background-color 0.3s ease;
+    font-weight: 500;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
 }
 
-.add-button {
-    background-color: #007bff; /* Azul para adicionar */
-}
-.add-button:hover {
-    background-color: #0056b3;
-}
+.add-button { background-color: #007bff; }
+button[type="submit"] { background-color: #28a745; }
+.edit-link { background-color: #ffc107; color: #212529; }
+.delete-link { background-color: #dc3545; color: white; }
+.view-link { background-color: #17a2b8; color: white; }
 
-button[type="submit"] {
-    background-color: #28a745; /* Verde para salvar/confirmar */
-}
-button[type="submit"]:hover {
-    background-color: #1e7e34;
-}
-
-.actions .edit-link { /* Exemplo se quiser estilizar especificamente */
-    background-color: #ffc107; /* Amarelo para editar */
-    color: #212529;
-}
-.actions .delete-link { /* Exemplo */
-    background-color: #dc3545; /* Vermelho para deletar */
-    color: white;
-}
-.actions .view-link {
-    background-color: #17a2b8; /* Azul info para ver */
-    color: white;
-}
-
-
-/* Mensagens */
+/* Mensagens de Sucesso/Erro */
 .message {
-    padding: 12px 15px;
+    padding: 15px;
     margin-bottom: 20px;
     border-radius: 5px;
     border: 1px solid transparent;
     font-size: 0.95em;
+    text-align: center;
 }
-
-.success {
-    background-color: #d4edda;
-    color: #155724;
-    border-color: #c3e6cb;
-}
-
-.error {
-    background-color: #f8d7da;
-    color: #721c24;
-    border-color: #f5c6cb;
-}
+.success { background-color: #d1e7dd; color: #0f5132; border-color: #badbcc; }
+.error { background-color: #f8d7da; color: #721c24; border-color: #f5c6cb; }
 
 /* Formulários */
-.form-container {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 2px 3px rgba(0,0,0,0.1);
-    max-width: 500px; /* Limita a largura do formulário */
-}
-
-.form-group {
-    margin-bottom: 18px;
-}
-
+.form-group { margin-bottom: 18px; }
 .form-group label {
     display: block;
     margin-bottom: 6px;
-    font-weight: bold;
+    font-weight: 600;
     color: #495057;
 }
-
-.form-group input[type="text"],
-.form-group input[type="email"],
-.form-group textarea {
+.form-group input, .form-group textarea {
     width: 100%;
-    padding: 10px;
+    padding: 10px 12px;
     border: 1px solid #ced4da;
     border-radius: 4px;
-    box-sizing: border-box; /* Importante para padding não aumentar a largura total */
+    box-sizing: border-box;
     font-size: 1em;
+    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 }
-.form-group textarea {
-    min-height: 80px;
-    resize: vertical;
+.form-group input:focus, .form-group textarea:focus {
+    border-color: #80bdff;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
 }
+.form-group textarea { min-height: 100px; resize: vertical; }
+.error-message { color: #dc3545; font-size: 0.875em; margin-top: 5px; }
 
-.error-message {
-    color: #dc3545;
-    font-size: 0.85em;
-    margin-top: 4px;
-}
-
-/* Links de Navegação */
+/* Navegação e Link de Voltar com Ícone */
 .nav-links {
-    margin-bottom: 20px;
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid #e0e0e0;
+}
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px; /* Espaço entre o ícone e o texto */
+    padding: 8px 15px;
+    background-color: #6c757d; /* Cinza */
+    color: white;
+    border-radius: 5px;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+}
+.back-link:hover {
+    background-color: #5a6268;
+    color: white; /* Mantém a cor do texto no hover */
+    text-decoration: none;
 }
 
-.nav-links a {
-    margin-right: 15px;
-    font-weight: bold;
+/* Estilos para a lista de exercícios dentro da tabela */
+.exercicios-cell ul.exercicios-lista {
+    margin: 0;
+    padding-left: 18px; /* Adiciona um recuo para a lista */
+    list-style-type: disc; /* Estilo de marcador */
+}
+
+.exercicios-cell li.exercicio-item {
+    padding: 3px 0; /* Espaçamento entre os itens da lista */
+    white-space: nowrap; /* Evita que o texto do exercício quebre a linha */
+}
+
+.exercicio-item .nome-exercicio {
+    font-weight: bold; /* Deixa o nome do exercício em negrito */
+}
+
+.exercicio-item .series-repeticoes {
+    color: #555; /* Cor mais suave para as séries/repetições */
 }

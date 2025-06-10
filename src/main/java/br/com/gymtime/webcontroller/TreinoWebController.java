@@ -236,28 +236,22 @@ public class TreinoWebController {
      * Deleta um treino específico de um aluno.
      */
     @GetMapping("/deletar/{treinoId}")
-    public String deletarTreino(@PathVariable Long alunoId, @PathVariable Long treinoId, RedirectAttributes redirectAttributes) {
-        logger.info("Tentando deletar treino ID: {} do aluno ID: {}", treinoId, alunoId);
-        // Valida se o aluno existe primeiro
-        if (alunoService.getAlunoById(alunoId).isEmpty()) {
-            logger.warn("Tentativa de deletar treino para aluno não existente ID: {}", alunoId);
-            redirectAttributes.addFlashAttribute("errorMessage", "Aluno não encontrado.");
-            return "redirect:/web/alunos";
-        }
-
-        Optional<TreinoResponseDTO> treinoOpt = treinoService.getTreinoByIdAndAlunoId(treinoId, alunoId);
-        if (treinoOpt.isPresent()) {
-            try {
-                treinoService.deleteTreino(treinoId);
-                redirectAttributes.addFlashAttribute("successMessage", "Treino deletado com sucesso!");
-                logger.info("Treino ID: {} deletado com sucesso.", treinoId);
-            } catch (Exception e) {
-                logger.error("Erro ao deletar treino ID: {}", treinoId, e);
-                redirectAttributes.addFlashAttribute("errorMessage", "Erro ao deletar treino: " + e.getMessage());
+    public String deletarTreino(@PathVariable Long alunoId, @PathVariable Long treinoId,
+                                RedirectAttributes redirectAttributes) {
+        try {
+            // Verificar se o treino pertence ao aluno antes de deletar
+            Optional<TreinoResponseDTO> treino = treinoService.getTreinoByIdAndAlunoId(treinoId, alunoId);
+            if (treino.isEmpty()) {
+                redirectAttributes.addFlashAttribute("errorMessage", // <-- CORRIGIDO
+                        "Treino não encontrado ou não pertence a este aluno.");
+                return "redirect:/web/alunos/" + alunoId + "/treinos";
             }
-        } else {
-            logger.warn("Tentativa de deletar treino ID: {} que não pertence ao aluno ID: {} ou não existe.", treinoId, alunoId);
-            redirectAttributes.addFlashAttribute("errorMessage", "Treino não encontrado ou não pertence a este aluno.");
+
+            treinoService.deleteTreino(treinoId);
+            redirectAttributes.addFlashAttribute("successMessage", "Treino deletado com sucesso!"); // <-- CORRIGIDO
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", // <-- CORRIGIDO
+                    "Erro ao deletar treino: " + e.getMessage());
         }
         return "redirect:/web/alunos/" + alunoId + "/treinos";
     }
